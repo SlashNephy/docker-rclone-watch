@@ -5,18 +5,19 @@ if [ -z "$RCLONE_COMMAND" ]; then
     exit 1
 fi
 
-if [ -z "$RCLONE_WATCH_DIR" ]; then
-    echo "ERROR: RCLONE_WATCH_DIR is not set." 1>&2
+if [ -z "$INOTIFYWAIT_DIR" ]; then
+    echo "ERROR: INOTIFYWAIT_DIR is not set." 1>&2
     exit 1
 fi
 
-RCLONE_WATCH_EVENTS=${RCLONE_WATCH_EVENTS:-"create,move"}
+INOTIFYWAIT_OPTIONS=${INOTIFYWAIT_OPTIONS:-""}
+INOTIFYWAIT_EVENTS=${INOTIFYWAIT_EVENTS:-"create,move,modify,delete"}
 
 # https://github.com/rclone/rclone/issues/249#issuecomment-425352531
 while [[ true ]] ; do
     # performs synchronizations / copy
     eval "rclone $RCLONE_COMMAND"
 
-    # waiting for something to change or it will pass 300 seconds
-    inotifywait --recursive --timeout 300 -e $RCLONE_WATCH_EVENTS $RCLONE_WATCH_DIR
+    # waiting for something to change or it will pass timeout
+    eval "inotifywait $INOTIFYWAIT_OPTIONS -e $INOTIFYWAIT_EVENTS $INOTIFYWAIT_DIR"
 done

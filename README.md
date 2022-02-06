@@ -19,6 +19,6 @@ services:
         read_only: true
     environment:
       RCLONE_COMMAND: copy /mnt/data1 user:data1 --drive-stop-on-upload-limit --transfers=20 -P
-      RCLONE_WATCH_DIR: /mnt/data1
-      RCLONE_WATCH_EVENTS: create,move
+      INOTIFYWAIT_DIR: /mnt/data1
+      INOTIFYWAIT_EVENTS: create,move
 ```
